@@ -1,0 +1,336 @@
+<template>
+  <section class="wrapper">
+    <my-check @chooseAllDel="chooseAllDel" :chooseList="chooseList" @chooseAll="chooseAll" v-show="showCheck" />
+    <ul>
+      <li v-if="$route.path !== '/mini'" @click.prevent.stop="jump2Other(item)" v-for="(item,index) in newList">
+        <div v-show="showCheck">
+          <img @click.prevent.stop="handleClickChoose(item,index)" :src="item.isChoose ? '../../../static/img/icon-check-action.png'  :'../../../static/img/icon-check-default.png'" alt="check">
+        </div>
+        <div class="detail">
+          <div class="img-box">
+            <img src="../../../static/img/list-1.png" alt="avatar">
+          </div>
+          <div class="right">
+            <p class="one">
+              <span>【{{item.title}}】</span>
+              <span @click.prevent.stop="handleChangeRoof(item.tid || item.nid)" :class="[item.top == 0 ? 'roof' : 'roof-active']">置顶</span>
+              <img @click.prevent.stop="handleClickEdit(item)" src="../../../static/img/icon-edit.png" alt="handle">
+              <img @click.prevent.stop="handleClickDel(item.tid || item.nid)" src="../../../static/img/icon-delete.png" alt="handle">
+            </p>
+            <p v-html="item.abstract"></p>
+            <p class="two">
+              <span>{{item.pubtime}}   {{item.visits}}人阅</span>
+              <span>同步至小程序：</span>
+              <span @click.prevent.stop="setSyncArticle(list,item)" :class="{'active':list.isshow}" v-for="(list,lIndex) in item.concatList" :key="lIndex">{{list.correlation}}</span>
+            </p>
+          </div>
+        </div>
+      </li>
+      <li v-if="$route.path == '/mini'" @click.prevent.stop="jump2Other(item)" v-for="(item,index) in newList">
+        <div class="detail">
+          <div class="img-box">
+            <img src="../../../static/img/list-1.png" alt="avatar">
+          </div>
+          <div class="right">
+            <p class="one">
+              <span>【{{item.article.title}}】</span>
+              <img @click.prevent.stop="handleClickDel(item.article.tid || item.article.nid,item)" src="../../../static/img/icon-delete.png" alt="handle">
+            </p>
+            <p v-html="item.article.abstract"></p>
+            <p class="two">
+              <span>{{item.article.pubtime}}   {{item.article.visits}}人阅</span>
+            </p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>  
+</template>
+
+<script>
+export default {
+  props: ["list"],
+  data() {
+    return {
+      chooseList: [],
+      concatList: []
+    };
+  },
+  computed: {
+    newList() {
+      return this.list;
+    },
+    showCheck() {
+      return this.$store.state.showCheck;
+    },
+  },
+  watch:{
+    'concatList':function(){
+      this.concatList.map(item => {
+        item.isshow = false
+      })
+        this.newList.map((item,index)=>{
+          this.$set(this.newList[index],'concatList',JSON.parse(JSON.stringify(this.concatList)))
+          item.concatList.map(list=>{
+            for(var k in item.sync){
+              if(list.id == item.sync[k]){
+                list.isshow = true
+              }
+            }
+          })
+        })
+    }
+  },
+  methods: {
+    setSyncArticle(list, item) {
+      // 单击同步小程序
+      let data = {},
+        name = this.$route.name;
+      if (name == "news" || name == "firend" || name == "student") {
+        data.type = 1;
+        data.cid = list.id;
+        data.pid = item.tid;
+      } else if (name == "message") {
+        data.type = 2;
+        data.cid = list.id;
+        data.pid = item.nid;
+      }
+      this.$http("Correlation/setSyncArticle", data).then(res => {
+        let error = res.error == 0 ? "success" : "error";
+        _g.toastMsg(error, res.msg);
+        list.isshow = !list.isshow
+      });
+    },
+    getConcatList() {
+      // 获取同步小程序列表
+      this.$http("Correlation/lists").then(res => {
+        this.concatList = res;
+      });
+    },
+    handleChangeRoof(e) {
+      // 单击置顶/取消置顶
+      let name = this.$route.name,
+        url = "";
+      switch (name) {
+        case "news":
+          url = "News/top";
+          break;
+        case "message":
+          url = "Notice/top";
+          break;
+        case "firend":
+          url = "News/top";
+          break;
+        case "student":
+          url = "News/top";
+          break;
+      }
+      this.$http(url, { id: e }).then(res => {
+        let error = res.error == 0 ? "success" : "error";
+        _g.toastMsg(error, res.msg);
+        this.$emit("getFetchMsg", true);
+      });
+    },
+    handleClickChoose(data, index) {
+      // 单击图片选择
+      this.$set(this.newList[index], "isChoose", !this.newList[index].isChoose);
+    },
+    chooseAllDel(e) {
+      let list = this.newList.filter(item => {
+        return item.isChoose;
+      });
+      list = list.map(item => {
+        return item.tid || item.nid;
+      });
+      this.handleClickDel(list);
+    },
+    chooseAll(e) {
+      this.newList.map(item => {
+        this.$set(item, "isChoose", e);
+      });
+    },
+    handleClickEdit(item) {
+      // 单击编辑
+      let name = this.$route.name,
+        type = "";
+      switch (name) {
+        case "news":
+          type = "news";
+          break;
+        case "message":
+          type = "notice";
+          break;
+        case "firend":
+          type = "company";
+          break;
+        case "student":
+          type = "student";
+          break;
+      }
+      this.$router.push({ name: "publish", params: { type, data: item } });
+    },
+    handleClickDel(e,item) {
+      // 单击删除 -- 批量删除
+      let name = this.$route.name,
+        url = "" , data = {id : e};
+      switch (name) {
+        case "news":
+          url = "News/delete";
+          break;
+        case "message":
+          url = "Notice/delete";
+          break;
+        case "firend":
+          url = "News/delete";
+          break;
+        case "student":
+          url = "News/delete";
+          break;
+        case 'mini' : 
+          url = 'Correlation/setSyncArticle',
+          data = {
+            cid:item.cid,
+            pid:item.pid,
+            type:item.type
+          }
+          break;
+      }
+      // console.log(data)
+      // return
+      if (e.length == 0) {
+        _g.toastMsg("warning", "请选择操作对象");
+        return;
+      }
+      this.$http(url, data).then(res => {
+        let error = res.error == 0 ? "success" : "error";
+        _g.toastMsg(error, res.msg);
+        if (res.error == 0) {
+          setTimeout(() => {
+            this.$emit("getFetchMsg", true);
+            this.$store.commit("handleClickShowCheck", { state: false });
+          }, 1000);
+        }
+      });
+    },
+    jump2Other(data) {
+      let name = this.$route.name,
+        url = "";
+      switch (name) {
+        case "news":
+          url = "/news/detail/" + data.tid;
+          break;
+        case "message":
+          url = "/message/detail/" + data.nid;
+          break;
+        case "firend":
+          url = "/firend/detail/" + data.tid;
+          break;
+        case "student":
+          url = "/student/detail/" + data.tid;
+      }
+      this.$router.push(url);
+    }
+  },
+  created() {
+    this.getConcatList();
+    this.newList.map(item => {
+      item.isChoose = false;
+    });
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.wrapper {
+  width: 100%;
+  ul {
+    width: 100%;
+    li {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px 0;
+      padding-left: 10px;
+      border-bottom: 1px solid #eee;
+      img[alt="check"] {
+        width: 24px;
+        height: 24px;
+      }
+      div.detail {
+        flex: 1;
+        display: flex;
+        div.img-box {
+          margin-left: 10px;
+          margin-right: 10px;
+          img[alt="avatar"] {
+            width: 120px;
+            height: 80px;
+          }
+        }
+        div.right {
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: space-between;
+          width: 100%;
+          .one {
+            display: flex;
+            align-items: center;
+            span:first-child {
+              flex: 1;
+              font-size: 16px;
+              font-weight: 600;
+            }
+            span.roof-active {
+              margin-right: 10px;
+              padding: 1px 5px;
+              font-size: 14px;
+              background-color: #9b3038;
+              color: #fff;
+              border-radius: 4px;
+            }
+            span.roof {
+              margin-right: 10px;
+              padding: 1px 5px;
+              font-size: 14px;
+              background-color: #999;
+              color: #fff;
+              border-radius: 4px;
+            }
+            img {
+              margin-right: 10px;
+            }
+            span:first-child + span,
+            img:hover {
+              cursor: pointer;
+            }
+          }
+          .one + p {
+            font-size: 16px;
+          }
+          .two {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #999;
+            span:first-child {
+              flex: 1;
+            }
+            span:nth-child(2) ~ span {
+              margin-right: 10px;
+              font-size: 16px;
+            }
+            span.active {
+              color: #00998d;
+            }
+          }
+        }
+      }
+    }
+    li:hover {
+      border: 1px solid #00998d;
+      cursor: pointer;
+    }
+  }
+}
+</style>

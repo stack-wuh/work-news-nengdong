@@ -1,0 +1,42 @@
+<template>
+  <section class="wrapper">
+    <my-nav type="1"/>
+    <div class="content">
+      <my-search type='1' />
+      <my-item-list  />
+      <my-bottom />
+    </div>
+  </section>
+</template>
+
+<script>
+import MyNav from '@/components/common/nav'
+import Searchs from '@/components/common/searchs'
+import ItemList from '@/components/common/itemList'
+  export default{
+    components:{
+      MyNav,
+      Searchs,
+      ItemList
+    },
+    data(){
+      return{
+
+      }
+    },
+    methods:{
+      fetchData(){
+        this.$http('News/manage').then(res=>{
+
+        })
+      }
+    },
+    created(){
+      this.fetchData()
+    }
+  }
+</script>
+
+<style lang="less" scoped>
+
+</style>

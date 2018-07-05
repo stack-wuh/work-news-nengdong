@@ -1,0 +1,13 @@
+.el-input{
+  .el-input-group__append, .el-input-group__prepend{
+    padding:0;
+    margin:0
+  }
+}
+.my-input{
+  width:220px;
+}
+.el-select-dropdown ,
+.el-popper{
+  z-index:20000 !important;
+}

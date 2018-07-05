@@ -1,0 +1,53 @@
+<template>
+  <section class="wrapper">
+    <section class="info">
+      <article>
+        <h4>新闻标题</h4>
+        <p><span>类型: </span><span>校友活动</span><span>时间: </span><span>2018年05年11日 12：11</span></p>
+        <p>
+          this is detail
+        </p>
+      </article>
+      <img src="../../../static/img/icon-delete.png" alt="delete">
+    </section>
+  </section> 
+</template>
+
+<script>
+  
+</script>
+
+<style lang="less" scoped>
+  .wrapper{
+    height:100%;
+    box-sizing: border-box;
+  .info{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    width:90%;
+    height:100%;
+    padding:10px 30px;
+    margin:0 auto;
+    margin-bottom:15px;
+    border:1px solid #eee;
+    box-sizing: border-box;
+    
+    article{
+      flex:1;
+      h4 + p{
+        margin: 5px 0;
+        span:nth-child(2n){
+          margin-right:10px;
+          color: #999;
+        }
+      }
+      text-align:center;
+    }
+    img:hover{
+      cursor: pointer;
+    }
+  }
+  }
+</style>

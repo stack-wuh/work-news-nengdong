@@ -1,0 +1,140 @@
+<template>
+  <section class="wrapper">
+    <my-check />
+    <ul>
+      <li @click="jump2Other" v-for="item in 4">
+        <div>
+          <img src="../../../static/img/icon-check-default.png" alt="check">
+        </div>
+        <div class="detail">
+          <div class="img-box">
+            <img src="../../../static/img/list-1.png" alt="avatar">
+          </div>
+          <div class="right">
+            <p class="one">
+              <span>【班级建设】</span>
+              <span>置顶</span>
+              <img src="../../../static/img/icon-edit.png" alt="handle">
+              <img src="../../../static/img/icon-delete.png" alt="handle">
+            </p>
+            <p>这是一段新闻标题</p>
+            <p class="two">
+              <span>2018年5月18日 14:22   520人阅</span>
+              <span>同步至小程序：</span>
+              <span class="active">校友端</span>
+              <span>教工端</span>
+              <span>学生端</span>
+            </p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>  
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+
+    }
+  },
+  methods:{
+    jump2Other(){
+      let name = this.$route.name , url = ''
+      switch(name){
+        case 'news' : url = '/news/detail' 
+                    break;
+      }
+      this.$router.push(url)
+    }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.wrapper{
+  width:100%;
+  ul {
+    width: 100%;
+    li{
+      display: flex;
+      align-items: center;
+      width:100%;
+      padding:15px 0;
+      padding-left:10px;
+      border-bottom: 1px solid #eee;
+      img[alt="check"]{
+        width:24px;
+        height:24px;
+      }
+      div.detail{
+        flex:1;
+        display: flex;
+        div.img-box{
+          margin-left:10px;
+          margin-right:10px;
+          img[alt="avatar"]{
+            width: 120px;
+            height: 80px;
+          }
+        }
+        div.right{
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: space-between;
+          width: 100%;
+          .one{
+            display: flex;
+            align-items: center;
+            span:first-child{
+              flex:1;
+              font-size: 16px;
+              font-weight: 600;
+            }
+            span:first-child+span{
+              margin-right:10px;
+              padding:1px 5px;
+              font-size: 14px;
+              background-color: #9B3038;
+              color: #fff;
+              border-radius: 4px;
+            }
+            img{
+              margin-right:10px;
+            }
+            span:first-child+span,
+            img:hover{
+              cursor: pointer;
+            }
+          }
+          .one+p{
+            font-size: 16px;
+          }
+          .two{
+            display: flex;
+            justify-content: space-between;
+            align-items:center;
+            font-size: 14px;
+            color: #999;
+            span:first-child{
+              flex:1;
+            }
+            span:nth-child(2)~span{
+              margin-right:10px;
+              font-size: 16px;
+            }
+            span.active{
+              color: #00998d;
+            }
+          }
+        }
+      }
+    }
+    li:hover{
+      border:1px solid #00998d;
+      cursor: pointer;
+    }
+  }
+}
+</style>

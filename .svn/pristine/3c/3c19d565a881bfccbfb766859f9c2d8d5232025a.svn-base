@@ -1,0 +1,110 @@
+<template>
+  <section class="wrapper">
+    <div>
+      <span>新闻公告</span>
+      <span>管理平台</span>
+    </div>
+    <ul>
+      <li :class="{'active' : item.urlPath == $route.path}" @click="handleClickJump(item)" v-for="item in leftmenu" :key="item.name">
+        <img v-bind="item.iconPath" alt="icon">
+        <span>{{item.name}}</span>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<script>
+  export default {
+    data(){
+      return {
+        leftmenu:[
+          {
+            name:'首页',
+            iconPath:'../../../static/img/icon-home.png',
+            urlPath:'/index'
+          },
+          {
+            name:'新闻速递',
+            iconPath:'../../../static/img/icon-news.png',
+            urlPath:'/news'
+          },
+          {
+            name:'通知公告',
+            iconPath:'../../../static/img/icon-message.png',
+            urlPath:'/message'
+          },
+          {
+            name:'企业校友',
+            iconPath:'../../../static/img/icon-fir.png',
+            urlPath:'/firend'
+          },
+          {
+            name:'学生中心',
+            iconPath:'../../../static/img/icon-stu.png',
+            urlPath:'/student'
+          },
+          {
+            name:'留言管理',
+            iconPath:'../../../static/img/icon-mess.png',
+            urlPath:'/note'
+          },
+          {
+            name:'小程序关联',
+            iconPath:'../../../static/img/icon-concat.png',
+            urlPath:'/mini'
+          }
+        ]
+      }
+    },
+    methods:{
+      handleClickJump(data){
+        this.$router.push(data.urlPath)
+      }
+    }
+  }
+</script>
+
+<style lang="less" scoped>
+.wrapper{
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+
+  div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height:80px;
+    font-size: 28px;
+    background-color: #1B1D1D;
+    span:last-child{
+      margin-left:5px;
+      font-size: 16px;
+    }
+  }
+  ul{
+    li{
+      display: flex;
+      justify-content: center;
+      align-items:center;
+      height:60px;
+      font-size: 20px;
+      user-select: none;
+      img[alt="icon"]{
+        width:24px;
+        height:24px;
+      }
+      span{
+        display: inline-block;
+        width:140px;
+        margin-left:10px;
+      }
+    }
+    li.active,
+    li:hover{
+      cursor:pointer;
+      background-color: #00776E;
+    }
+  }
+}
+</style>

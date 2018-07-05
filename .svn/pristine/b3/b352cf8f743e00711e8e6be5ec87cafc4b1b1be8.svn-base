@@ -1,0 +1,45 @@
+<template>
+  <section class="wrapper">
+    <nav>
+      <img src="../../../static/img/icon-check-default.png" alt="check">
+      <span>全选</span>
+      <span>删除</span>
+      <img src="../../../static/img/icon-close.png" alt="close">
+    </nav>
+  </section>  
+</template>
+
+<script>
+  
+</script>
+
+<style lang="less" scoped>
+.wrapper{
+  width: 100%;
+  nav{
+    display: flex;
+    align-items: center;
+    height:40px;
+    width:100%;
+    padding:0 10px;
+    background-color: #e0e0e0;
+    span{
+      margin-right:15px;
+    }
+    span:last-of-type{
+      flex:1;
+    }
+    span:hover,
+    img:hover{
+      cursor: pointer;
+    }
+    img{
+      margin-right:15px;
+    }
+    img[alt="check"]{
+      width:24px;
+      height:24px;
+    }
+  }
+}
+</style>

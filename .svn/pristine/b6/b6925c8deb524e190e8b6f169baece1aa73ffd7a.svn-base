@@ -1,0 +1,7 @@
+.wrapper{
+  .nav-top{
+    display:flex;
+    align-items: center;
+    background-color: gray;
+  }
+}

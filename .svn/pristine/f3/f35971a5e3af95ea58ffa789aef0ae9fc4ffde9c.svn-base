@@ -1,0 +1,23 @@
+<template>
+  <section class="wrapper">
+    <el-pagination :total="0" layout="total,prev,pager,next,jumper"></el-pagination>
+  </section>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+
+    }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.wrapper{
+  display: flex;
+  align-items: center;
+  margin:15px 0;
+}
+</style>

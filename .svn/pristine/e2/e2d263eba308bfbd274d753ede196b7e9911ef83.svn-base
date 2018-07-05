@@ -1,0 +1,23 @@
+<template>
+  <section class="wrapper">
+    <my-nav type="2" />  
+    <p>当前位置: 新闻速递>详情</p>
+    <my-item-info  />
+  </section> 
+</template>
+
+<script>
+  
+</script>
+
+<style lang="less" scoped>
+.wrapper{
+  // align-items: flex-start;
+  // justify-content: flex-start;
+  p{
+    padding:20px;
+    font-size: 14px;
+    color: #999;
+  }
+}
+</style>

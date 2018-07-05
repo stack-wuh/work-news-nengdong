@@ -1,0 +1,36 @@
+<template>
+  <section class="wrapper">
+    <el-table border stripe :data="list">
+      <el-table-column align="center" label="留言内容" prop="content"></el-table-column>
+      <el-table-column align="center" label="身份" prop="ID"></el-table-column>
+      <el-table-column align="center" label="姓名" prop="name"></el-table-column>
+      <el-table-column align="center" label="操作" >
+        <template slot-scope="scope">
+          <el-button size="mini" type="text">回复</el-button>
+          <el-button size="mini" type="text">展示</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </section>
+</template>
+
+<script>
+export default {
+  data(){
+    return{
+      list:[
+        {
+          content:'这是一条测试信息',
+          name:'zhansan',
+          ID:'学生',
+        }
+      ]
+    }
+  }
+}
+</script>
+
+
+<style lang="less" scoped>
+
+</style>

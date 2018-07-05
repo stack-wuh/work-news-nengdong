@@ -1,0 +1,401 @@
+<template>
+  <section class="wrapper">
+    <p class="nav-title">当前位置: {{menuName}}>{{navName}}</p>
+    <el-form class="my-form" :model="formList.valid" ref="myForm" label-width="120px">
+      <el-form-item v-for="(item,index) in formList.info" :key="index" :label="item.name" :prop="item.prop" :rules="item.rules">
+        <el-select class="my-select" placeholder="请选择分类" v-if="item.isSelect" v-model="formList.valid[item.prop]">
+          <el-option v-for="sub in item.selectList" :key="sub" :label="sub" :value="sub"></el-option>
+        </el-select>
+        <el-input v-model="formList.valid[item.prop]" v-if="item.isTextArea" type="textarea" :rows="2" ></el-input>
+        <el-input class="my-input" v-if="item.isInput" placeholder="请输入内容" v-model="formList.valid[item.prop]"></el-input>
+        <div v-if="item.isEditor" id="editor"></div>
+      </el-form-item>
+    </el-form>
+    <div class="btn-area">
+      <div @click="submit" class="btn">发布</div>
+    </div>
+  </section>
+</template>
+
+<script>
+const E  = require('wangeditor')
+export default {
+  data() {
+    return {
+      list:[
+        {
+          type:'news',
+          info:[
+            {
+              name:'选择分类',
+              isSelect:true,
+              prop:'list',
+              selectList:['新闻速递'],
+              rules:[
+                {
+                  required:true,
+                  message:'请选择新闻类型',
+                  trigger:'change'
+                }
+              ]
+            },
+            {
+              name:'新闻标题',
+              isInput:true,
+              prop:'title',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑标题',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'编辑摘要',
+              isTextArea:true,
+              prop:'abstract',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑摘要',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'编辑内容',
+              isEditor:true,
+              prop:'content',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑文档内容'
+                }
+              ]
+            }
+          ],
+          valid:{
+            list:'',
+            title:'',
+            content:'',
+            abstract:'',
+          }
+        },
+        {
+          type:'notice',
+          info:[
+            {
+              name:'选择分类',
+              isSelect:true,
+              prop:'list',
+              selectList:[
+                '院办',
+                '研工办',
+                '学工办',
+                '科研办',
+                '教学办',
+                '党办',
+              ],
+              rules:[
+                {
+                  required:true,
+                  message:'请选择分类',
+                  trigger:'change'
+                }
+              ]
+            },
+            {
+              name:'公告标题',
+              isInput:true,
+              prop:'title',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑公告标题',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'内容摘要',
+              isTextArea:true,
+              prop:'abstract',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑内容摘要',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'编辑内容',
+              isEditor:true,
+              prop:'content',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑内容',
+                  trigger:'blur'
+                }
+              ]
+            }
+          ],
+          valid:{
+            list:'',
+            title:'',
+            abstract:'',
+            content:''
+          }
+        },
+        {
+          type:'company',
+          info:[
+            {
+              name:'选择分类',
+              isSelect:true,
+              selectList:['行业动态','校友名录','企业文化'],
+              prop:'list',
+              rules:[
+                {
+                  required:true,
+                  message:'请选择类型',
+                  trigger:'change'
+                }
+              ]
+            },
+            {
+              name:'主标题',
+              isInput:true,
+              prop:'title',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑标题',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'副标题',
+              isInput:true,
+              prop:'abstract',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑副标题',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'编辑内容',
+              isEditor:true,
+              prop:'content',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑内容',
+                  trigger:'blur'
+                }
+              ]
+            }
+          ],
+          valid:{
+            list:'',
+            title:'',
+            abstract:'',
+            content:''
+          }
+        },
+        {
+          type:'student',
+          info:[
+            {
+              name:'选择分类',
+              isSelect:true,
+              prop:'list',
+              rules:[
+                {
+                  required:true,
+                  message:'请选择分类',
+                  trigger:'blur'
+                }
+              ],
+              selectList:['学习考试','阅读交流','国际交流','就业指南','招聘公告','办事指南','安全法制','信息查询']
+            },
+            {
+              name:'主标题',
+              isInput:true,
+              prop:'title',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑标题',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'副标题',
+              isInput:true,
+              prop:'abstract',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑副标题',
+                  trigger:'blur'
+                }
+              ]
+            },
+            {
+              name:'编辑内容',
+              isEditor:true,
+              prop:'content',
+              rules:[
+                {
+                  required:true,
+                  message:'请编辑内容',
+                  trigger:'blur'
+                }
+              ]
+            }
+          ],
+          valid:{
+            title:'',
+            list:'',
+            abstract:'',
+            content:''
+          }
+        },
+      ]
+    };
+  },
+  computed:{
+    formList(){
+      return this.list.find(item=>{
+        return item.type == this.$route.params.type
+      })
+    },
+    navName(){
+      let type = this.$route.params.type , name = ''
+      switch(type){
+        case 'news' : name = '发布新闻'
+                    break;
+        case 'notice' : name = '发布通知'
+                    break;
+        case 'company' : name = "发布企业校友"
+                    break;
+        case 'student' : name = '发布学生中心'
+                    break;
+      }
+      return name
+    },
+    menuName(){
+      let type = this.$route.params.type , name = ''
+      switch(type){
+        case 'news' : name = '新闻速递'
+                    break;
+        case 'notice' : name = '通知公告'
+                    break;
+        case 'company' : name = "企业校友"
+                    break;
+        case 'student' : name = '学生中心'
+                    break;
+      }
+      return name      
+    }
+  },
+  methods:{
+    submit(){
+      let url = '' , type = this.$route.params.type
+      if(type == 'news' || type == 'company' || type=="student"){
+        if(this.formList.valid.tid){
+          url = 'News/update'
+          this.formList.valid.id = this.formList.valid.tid
+        }else{
+          url = 'News/pubnews'
+        }    
+      }else if(type == 'notice'){
+        if(this.formList.valid.nid){
+          url = 'Notice/update'
+          this.formList.valid.id = this.formList.valid.nid
+        }else{
+          url = 'Notice/pubnotice'
+        }
+      }
+      this.$refs.myForm.validate(valid=>{
+        if(valid){
+            this.$http(url,this.formList.valid).then(res=>{
+              let error = res.error == 0 ? 'success' : 'error'
+              _g.toastMsg(error,res.msg)
+              if(res.error == 0){
+                setTimeout(()=>{
+                  this.$refs.myForm.resetFields()
+                  this.$router.go(-1)
+                },1000)
+              }
+            })
+        }
+      })
+    },
+    fetchData(){   // 获取数据 -- 没有数据为发布 -- 有为编辑
+      if(this.$route.params.data){
+        this.formList.valid = this.$route.params.data
+      }
+    }
+  },
+  created(){
+    this.$nextTick(()=>{
+      var editor = new E('#editor')
+      editor.customConfig.uploadImgServer = rootPath + 'Base/editorUpload'  //图片上传地址
+      editor.customConfig.uploadFileName = 'file'  //图片上传类型
+      editor.customConfig.customAlert = function(info){   // 自定义alert框
+          _g.toastMsg('warning',info)
+      }
+      editor.customConfig.onchange = html => {  // 保存文本框内容
+        this.formList.valid.content = html
+      }
+      editor.create()   // 初始化编辑器
+      editor.txt.clear()  // 清除编辑器内容
+      editor.txt.html(this.formList.valid.content)  // 编辑器赋值
+    })
+    this.fetchData()
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.wrapper {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 20px;
+  p.nav-title {
+    color: #999;
+  }
+  .my-form{
+    width:100%;
+    margin-top:15px;
+
+    .my-select{
+      z-index:1000 !important;
+    }
+  }
+  div#editor{
+    width:100%;
+    height:400px;
+    z-index:0 ;
+  }
+  .btn-area{
+    width:100%;
+    text-align:center;
+    .btn{
+      width:120px;
+      color: #fff;
+      background-color: #00998d;
+      user-select: none;
+    }
+  }
+}
+</style>

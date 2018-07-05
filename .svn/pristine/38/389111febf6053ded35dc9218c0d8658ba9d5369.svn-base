@@ -1,0 +1,142 @@
+<template>
+  <section class="wrapper">
+    <div class="nav-top">
+      <span>首页</span>
+      <span>数据统计</span>
+    </div>
+    <section class="list">
+      <div class="list-box">
+        <div :style="'background-image:url('+ item.bg +')'" class="list-item" v-for="(item,index) in lists" :key="index">
+            <img v-bind:src="item.icon" alt="icon">
+            <span>{{item.name}}</span>
+            <span>{{item.total}}</span>
+        </div>
+      </div>
+    </section>
+  </section>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      lists: [
+        {
+          name: "文章总数",
+          prop:'message',
+          total: "100",
+          bg: "/static/img/list-3.png",
+          icon:'/static/img/icon-note.png'
+        },
+        {
+          name: "通知总数",
+          prop:'news',
+          total: "100",
+          bg: "/static/img/list-2.png",
+          icon:'/static/img/icon-viode.png'
+        },
+        {
+          name: "留言总数",
+          total: "100",
+          prop:'notice',
+          bg:'/static/img/list-4.png',
+          icon:'/static/img/icon-new.png'
+        },
+        {
+          name: "用户总数",
+          total: "100",
+          prop:'user',
+          bg:'/static/img/list-1.png',
+          icon:'/static/img/icon-user.png'
+        }
+      ]
+    };
+  },
+  methods:{
+    fetchData(){
+      this.$http('Index/index').then(res=>{
+        this.lists.map(item=>{
+          if(item.prop == 'message'){
+            item.total = res.newscount
+          }else if(item.prop == 'news'){
+            item.total = res.newscount
+          }else if(item.prop == 'notice'){
+            item.total = res.messagecount
+          }else if(item.prop == 'user'){
+            item.total = res.usercount
+          }
+        })
+      })
+    }
+  },
+  created(){
+    this.fetchData()
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.wrapper{
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+.nav-top {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  font-size: 22px;
+  background-color: #e0e0e0;
+
+  span:first-child {
+    margin-left: 25px;
+    padding-left: 15px;
+    border-left: 4px solid #00998d;
+  }
+  span + span {
+    margin-left: 5px;
+    font-size: 20px;
+    color: #999;
+  }
+}
+.list{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height:100%;
+  box-sizing: border-box;
+  .list-box{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row wrap;
+    width:1000px;
+    height:400px;
+    .list-item{
+      display:flex;
+      flex-flow: column wrap;
+      align-items:center;
+      justify-content: center;
+      width:300px;
+      height:186px;
+      margin:10px 100px;
+      span{
+        margin-top:15px;
+        font-size: 20px;
+        color: #fff;
+      }
+      span+span{
+        margin-top:5px;
+        font-size: 24px;
+      }
+    }
+    .list-item:hover{
+      cursor: pointer;
+      transform: scale3d(1.1,1.1,1.1);
+      transition: all .5s linear;
+    }
+  }
+}
+</style>
